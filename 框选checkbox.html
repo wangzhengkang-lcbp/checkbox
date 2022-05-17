@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>框选checkbox</title>
+    <style>
+        .wrap{
+            position: absolute;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            width: 240px;
+            height: 150px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            padding: 30px;
+            background-color: #ccc;
+        }
+        .wrap input{
+            width: 30px;
+            height: 30px;
+        }
+        .border{
+            position: absolute;
+            box-sizing: border-box;
+            width: 0;
+            height: 0;
+            background-color: transparent;
+            border: 1px #000 dashed;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+        <input type="checkbox">
+    </div>
+    <div class="border"></div>
+    <script>
+        let border = document.querySelector(".border")  //虚线元素节点
+        //拿到所有复选框并转成数组
+        let inps = Array.from(document.querySelectorAll(".wrap input"))
+        //记录每个复选框的位置
+        let inputPositionArr = inps.map(el => ({left: el.getBoundingClientRect().left+15, top: el.getBoundingClientRect().top+15}))
+
+        //鼠标按下事件
+        document.onmousedown = function(e) {
+            //记录鼠标按下时的位置
+            let downX = e.clientX, downY = e.clientY
+            //按下时先取消所有勾选的复选框
+            inps.forEach(el => { el.checked = false })
+            //按下时恢复虚线
+            border.style.display = "block"
+            //鼠标移动事件
+            document.onmousemove = function(e) {
+                //记录移动的位子、移动的边界范围
+                let moveX = e.clientX, moveY = e.clientY
+                let selectLeftEdge = Math.min(downX, moveX)     //左边界
+                let selectRightEdge = Math.max(downX, moveX)    //右边界
+                let selectTopEdge = Math.min(downY, moveY)      //上边界
+                let selectBottomtEdge = Math.max(downY, moveY)  //右边界
+                //构建虚线框
+                border.style.width = `${selectRightEdge-selectLeftEdge}px`
+                border.style.height = `${selectBottomtEdge-selectTopEdge}px`
+                border.style.top = `${selectTopEdge}px`
+                border.style.left = `${selectLeftEdge}px`
+                //勾选复选框在移动范围之内的
+                inps.forEach((el, i) => {
+                    //解构出对应节点的位子信息
+                    let {left, top} = inputPositionArr[i]
+                    if(i === 17)console.log(selectLeftEdge,selectRightEdge,selectTopEdge,selectBottomtEdge,left)
+                    //如果节点位子在范围内则勾选
+                    if(left > selectLeftEdge && left < selectRightEdge && top > selectTopEdge && top < selectBottomtEdge)
+                        el.checked = true
+                    else el.checked = false
+                })
+                // console.log(inps[17].checked)
+            }
+        }
+        //鼠标按键抬起时取消鼠标移动事件
+        document.onmouseup = function() {
+            document.onmousemove = null
+            border.style.display = "none"
+        }
+    </script>
+</body>
+</html>

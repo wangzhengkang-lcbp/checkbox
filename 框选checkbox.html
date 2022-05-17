@@ -89,13 +89,11 @@
                 inps.forEach((el, i) => {
                     //解构出对应节点的位子信息
                     let {left, top} = inputPositionArr[i]
-                    if(i === 17)console.log(selectLeftEdge,selectRightEdge,selectTopEdge,selectBottomtEdge,left)
                     //如果节点位子在范围内则勾选
                     if(left > selectLeftEdge && left < selectRightEdge && top > selectTopEdge && top < selectBottomtEdge)
                         el.checked = true
                     else el.checked = false
                 })
-                // console.log(inps[17].checked)
             }
         }
         //鼠标按键抬起时取消鼠标移动事件
